@@ -1,0 +1,18 @@
+html,
+body {
+    margin: 0;
+    height: 100%;
+    background: #18181b; /* zinc-900 */
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Image rendering stability */
+img {
+    display: block;
+    width: 100%;
+    height: auto;
+}

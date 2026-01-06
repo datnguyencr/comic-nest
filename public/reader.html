@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Comic Nest</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="assets/css/style.c81f7c9d.css" />
+    </head>
+
+    <body class="text-white bg-zinc-900">
+        <header
+            class="sticky top-0 z-10 bg-zinc-900/90 backdrop-blur border-b border-zinc-700"
+        >
+            <div
+                class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between"
+            >
+                <div id="title" class="font-semibold text-lg"></div>
+
+                <select
+                    id="volumeSelect"
+                    class="bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-sm"
+                ></select>
+            </div>
+        </header>
+
+        <main id="reader" class="max-w-4xl mx-auto px-4 space-y-6 my-12"></main>
+        <button
+            id="scrollTopBtn"
+            class="fixed bottom-12 right-4 p-3 bg-gray-500 hover:bg-gray-700 text-white rounded-full shadow-lg hidden z-50"
+            title="Scroll to top"
+        >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18"
+                />
+            </svg>
+        </button>
+        <script src="assets/js/utils.js"></script>
+        <script src="assets/js/reader.7ef67dc0.js"></script>
+    </body>
+</html>

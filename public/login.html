@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Google Login</title>
+    </head>
+    <body>
+        <button id="google-login">Sign in with Google</button>
+
+        <script type="module">
+            // Import only Firebase Auth functions
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+            import {
+                getAuth,
+                signInWithPopup,
+                GoogleAuthProvider,
+            } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+
+            // Minimal Firebase config
+            const firebaseConfig = {
+                apiKey: "AIzaSyAZLTmex2JqItkYIYjoyv3H_4zlOXAj1bY",
+                authDomain: "comics-nest-852f5.firebaseapp.com",
+            };
+
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const provider = new GoogleAuthProvider();
+
+            // Login function
+            async function loginWithGoogle() {
+                try {
+                    const result = await signInWithPopup(auth, provider);
+                    const user = result.user;
+                    alert("Logged in as: " + user.email);
+                    console.log(user); // You can see all user info if needed
+                } catch (error) {
+                    console.error("Login failed:", error);
+                }
+            }
+
+            document
+                .getElementById("google-login")
+                .addEventListener("click", loginWithGoogle);
+        </script>
+    </body>
+</html>
