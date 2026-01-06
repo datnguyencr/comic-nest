@@ -48,13 +48,11 @@ async function loadVolume(volumeNumber) {
     if (!volume) return;
 
     for (let i = 1; i <= volume.pageCount; i++) {
-        const url = `${comicData.path}/${volume.volume}/${String(i).padStart(
-            3,
-            "0"
-        )}.avif`;
+        const padded = String(i).padStart(3, "0");
+        const url = `${comicData.path}/${volume.volume}/${padded}.avif.enc`;
 
         const img = document.createElement("img");
-        img.src = await fetchAndDecrypt(`${url}.enc`);
+        img.src = await fetchAndDecrypt(url); // fetch from R2
         img.loading = "lazy";
         img.alt = `${comicData.title} - Vol ${volume.volume} - Page ${i}`;
         img.className = "w-full h-auto block";
