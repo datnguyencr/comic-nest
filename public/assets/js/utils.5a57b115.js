@@ -8,6 +8,9 @@ const KEY_BYTES = new TextEncoder().encode("692b0630a29e5454545444fa2ee5f630");
  * @returns {Promise<string>} - Blob URL to assign to img.src
  */
 async function fetchAndDecrypt(url, mimeType = "image/avif") {
+    if (hostile) {
+        throw new Error("Access revoked");
+    }
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Failed to fetch ${url}`);
     const buffer = await res.arrayBuffer();
@@ -60,7 +63,9 @@ function hasAccess() {
 function setAccess(key) {
     localStorage.setItem("accessKey", key);
 }
+// ================= Right-Click Block =================
 document.addEventListener("contextmenu", (e) => e.preventDefault());
+// ================= DevTools Warning =================
 async function loadDevToolsWarningAndDetect() {
     try {
         // 1️⃣ Load external HTML
@@ -77,6 +82,34 @@ async function loadDevToolsWarningAndDetect() {
 
 loadDevToolsWarningAndDetect();
 let devToolsOpen = false;
+// ================= Detection Loop =================
+let hostile = false;
+
+function onHostile(reason) {
+    if (hostile) return;
+    hostile = true;
+
+    console.warn("Hostile detected:", reason);
+
+    wipeContent();
+}
+
+function wipeContent() {
+    const reader = document.getElementById("reader");
+    if (!reader) return;
+
+    reader.innerHTML = `
+        <div class="w-full min-h-[80vh] flex items-center justify-center
+                    bg-zinc-900 text-zinc-400 select-none">
+            <div class="text-center">
+                <p class="text-xl font-semibold">Content unavailable</p>
+                <p class="text-sm opacity-60 mt-2">
+                    Please refresh the page
+                </p>
+            </div>
+        </div>
+    `;
+}
 
 setInterval(() => {
     const before = new Date();
@@ -84,6 +117,7 @@ setInterval(() => {
 
     const after = new Date();
     if (after - before > 100) {
+        onHostile("debugger timing");
         if (!devToolsOpen) {
             devToolsOpen = true;
             showWarning();
@@ -107,3 +141,12 @@ function hideWarning() {
     banner.classList.add("hidden");
     banner.classList.remove("animate-bounce");
 }
+// ================= Optional Keyboard Block =================
+// Prevent F12 / Ctrl+Shift+I / Ctrl+Shift+C
+document.addEventListener("keydown", (e) => {
+    if (
+        e.key === "F12" ||
+        (e.ctrlKey && e.shiftKey && ["I", "C", "J"].includes(e.key))
+    )
+        e.preventDefault();
+});
