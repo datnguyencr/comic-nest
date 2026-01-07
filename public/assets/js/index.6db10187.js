@@ -1,3 +1,5 @@
+import * as Auth from "./auth.f737c5cb.js";
+import * as Utils from "./utils.5a57b115.js";
 const container = document.getElementById("items");
 const template = document.getElementById("item-template");
 const searchInput = document.getElementById("searchInput");
@@ -15,7 +17,7 @@ async function loadLibrary() {
 }
 
 async function renderLibrary() {
-    const allowPrivate = hasAccess();
+    const allowPrivate = Utils.hasAccess();
     const query = (searchInput?.value || "").trim().toLowerCase();
 
     container.innerHTML = "";
@@ -33,7 +35,7 @@ async function renderLibrary() {
         img.alt = comic.title;
         title.textContent = comic.title;
 
-        img.src = await fetchAndDecrypt(`${comic.cover}.enc`);
+        img.src = await Utils.fetchAndDecrypt(`${comic.cover}.enc`);
 
         card.onclick = () => {
             location.href = `reader.html?id=${comic.id}`;
@@ -50,7 +52,7 @@ if (searchInput) {
 }
 
 accessInput.addEventListener("change", (e) => {
-    setAccess(e.target.value);
+    Utils.setAccess(e.target.value);
     e.target.value = "";
     renderLibrary();
 });

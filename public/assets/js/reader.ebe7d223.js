@@ -1,3 +1,6 @@
+import * as Auth from "./auth.f737c5cb.js";
+import * as Utils from "./utils.5a57b115.js";
+
 let comicData = null;
 let isVolumeChange = false;
 let loadToken = 0;
@@ -58,7 +61,7 @@ async function loadVolume(volumeNumber) {
         const url = `${comicData.path}/${volFolder}/${page}.avif.enc`;
 
         // Decrypt to ArrayBuffer
-        const blobUrl = await fetchAndDecrypt(url, "image/avif");
+        const blobUrl = await Utils.fetchAndDecrypt(url, "image/avif");
         if (myToken !== loadToken) {
             URL.revokeObjectURL(blobUrl);
             return;

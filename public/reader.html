@@ -15,14 +15,33 @@
             class="sticky top-0 z-10 bg-zinc-900/90 backdrop-blur border-b border-zinc-700"
         >
             <div
-                class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between"
+                class="max-w-4xl mx-auto px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4"
             >
-                <div id="title" class="font-semibold text-lg"></div>
+                <!-- Title -->
+                <div
+                    id="title"
+                    class="font-semibold text-lg text-center sm:text-left"
+                >
+                    Comic Nest
+                </div>
 
-                <select
-                    id="volumeSelect"
-                    class="bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-sm"
-                ></select>
+                <div
+                    class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 w-full sm:w-auto justify-center"
+                >
+                    <!-- Volume Select -->
+                    <select
+                        id="volumeSelect"
+                        class="bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-sm w-full sm:w-auto"
+                    ></select>
+
+                    <!-- Account Avatar -->
+                    <div
+                        id="account"
+                        class="flex items-center gap-2 justify-center sm:justify-end"
+                    >
+                        <!-- JS will insert avatar here -->
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -47,7 +66,6 @@
                 />
             </svg>
         </button>
-        <script src="./assets/js/utils.5a57b115.js"></script>
-        <script src="./assets/js/reader.ebe7d223.js"></script>
+        <script src="./assets/js/reader.ebe7d223.js" type="module"></script>
     </body>
 </html>

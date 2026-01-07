@@ -7,7 +7,7 @@ const KEY_BYTES = new TextEncoder().encode("692b0630a29e5454545444fa2ee5f630");
  * @param {string} mimeType - MIME type of the original file (e.g., "image/avif")
  * @returns {Promise<string>} - Blob URL to assign to img.src
  */
-async function fetchAndDecrypt(url, mimeType = "image/avif") {
+export async function fetchAndDecrypt(url, mimeType = "image/avif") {
     if (hostile) {
         throw new Error("Access revoked");
     }
@@ -57,10 +57,10 @@ function getTodayKey() {
     const day = String(d.getDate()).padStart(2, "0");
     return `${y}${m}${day}`;
 }
-function hasAccess() {
+export function hasAccess() {
     return localStorage.getItem("accessKey") === getTodayKey();
 }
-function setAccess(key) {
+export function setAccess(key) {
     localStorage.setItem("accessKey", key);
 }
 // ================= Right-Click Block =================
@@ -141,7 +141,7 @@ function hideWarning() {
     banner.classList.add("hidden");
     banner.classList.remove("animate-bounce");
 }
-// ================= Optional Keyboard Block =================
+//  ================= Optional Keyboard Block =================
 // Prevent F12 / Ctrl+Shift+I / Ctrl+Shift+C
 document.addEventListener("keydown", (e) => {
     if (

@@ -3,46 +3,44 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Google Login</title>
+        <title>Sign in</title>
+
+        <!-- Tailwind CDN -->
+        <script src="https://cdn.tailwindcss.com"></script>
     </head>
-    <body>
-        <button id="google-login">Sign in with Google</button>
 
-        <script type="module">
-            // Import only Firebase Auth functions
-            import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-            import {
-                getAuth,
-                signInWithPopup,
-                GoogleAuthProvider,
-            } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+    <body
+        class="min-h-screen bg-zinc-900 flex items-center justify-center text-white"
+    >
+        <div
+            class="w-full max-w-sm bg-zinc-800 rounded-xl shadow-lg p-6 space-y-6"
+        >
+            <h1 class="text-xl font-semibold text-center">Sign in</h1>
 
-            // Minimal Firebase config
-            const firebaseConfig = {
-                apiKey: "AIzaSyAZLTmex2JqItkYIYjoyv3H_4zlOXAj1bY",
-                authDomain: "comics-nest-852f5.firebaseapp.com",
-            };
+            <!-- Google Login -->
+            <button
+                id="google-login"
+                class="w-full flex items-center justify-center gap-3 bg-white text-black font-medium py-2 rounded-lg hover:bg-gray-100 transition"
+            >
+                <img
+                    src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                    alt="Google"
+                    class="w-5 h-5"
+                />
+                Continue with Google
+            </button>
 
-            // Initialize Firebase
-            const app = initializeApp(firebaseConfig);
-            const auth = getAuth(app);
-            const provider = new GoogleAuthProvider();
+            <div class="text-center text-sm text-zinc-400">or</div>
 
-            // Login function
-            async function loginWithGoogle() {
-                try {
-                    const result = await signInWithPopup(auth, provider);
-                    const user = result.user;
-                    alert("Logged in as: " + user.email);
-                    console.log(user); // You can see all user info if needed
-                } catch (error) {
-                    console.error("Login failed:", error);
-                }
-            }
+            <!-- Back -->
+            <a
+                id="back"
+                class="block text-center text-sm text-zinc-400 hover:text-white transition"
+            >
+                ← Back to home
+            </a>
+        </div>
 
-            document
-                .getElementById("google-login")
-                .addEventListener("click", loginWithGoogle);
-        </script>
+        <script type="module" src="./assets/js/login.js"></script>
     </body>
 </html>
