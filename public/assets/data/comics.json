@@ -3,7 +3,7 @@
         "id": "rqsc02kz78",
         "title": "dragonball",
         "cover": "assets/data/comics/rqsc02kz78/cover.avif",
-        "path": "https://c94f874feff3f71679f66becfbba1f05.r2.cloudflarestorage.com/comics/dragonball",
+        "path": "https://pub-07e3e40f84234f3bb7ce49bac7ba4e5c.r2.dev/dragonball",
         "volumes": [
             { "volume": 1, "pageCount": 225 },
             { "volume": 2, "pageCount": 229 },
