@@ -39,7 +39,6 @@ function setupVolumeSelector() {
         loadVolume(Number(select.value));
     };
 }
-
 async function loadVolume(volumeNumber) {
     const reader = document.getElementById("reader");
     reader.innerHTML = "";
@@ -47,21 +46,34 @@ async function loadVolume(volumeNumber) {
     const volume = comicData.volumes.find((v) => v.volume === volumeNumber);
     if (!volume) return;
 
-    // vol01, vol02, ...
     const volFolder = `vol${String(volumeNumber).padStart(2, "0")}`;
 
     for (let i = 0; i < volume.pageCount; i++) {
-        // 000, 001, ...
         const page = String(i).padStart(3, "0");
-
         const url = `${comicData.path}/${volFolder}/${page}.avif.enc`;
 
-        const img = document.createElement("img");
-        img.src = await fetchAndDecrypt(url);
-        img.loading = "lazy";
-        img.alt = `${comicData.title} - Vol ${volumeNumber} - Page ${i + 1}`;
-        img.className = "w-full h-auto block";
-        reader.appendChild(img);
+        // Decrypt to ArrayBuffer
+        const blobUrl = await fetchAndDecrypt(url, "image/avif");
+        const img = new Image();
+
+        await new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = reject;
+            img.src = blobUrl;
+        });
+
+        // Draw to canvas
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+
+        // Optionally, revoke the blob immediately
+        URL.revokeObjectURL(blobUrl);
+
+        // Add canvas to reader instead of <img>
+        reader.appendChild(canvas);
     }
 
     window.scrollTo({ top: 0, behavior: "instant" });

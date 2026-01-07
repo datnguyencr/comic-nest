@@ -55,7 +55,6 @@ accessInput.addEventListener("change", (e) => {
     renderLibrary();
 });
 
-
 loadLibrary().catch(console.error);
 
 document.addEventListener("keydown", (e) => {

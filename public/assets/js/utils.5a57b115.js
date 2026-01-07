@@ -60,3 +60,50 @@ function hasAccess() {
 function setAccess(key) {
     localStorage.setItem("accessKey", key);
 }
+document.addEventListener("contextmenu", (e) => e.preventDefault());
+async function loadDevToolsWarningAndDetect() {
+    try {
+        // 1️⃣ Load external HTML
+        const response = await fetch("devtools-warning.html");
+        const html = await response.text();
+        document.body.insertAdjacentHTML("beforeend", html);
+    } catch (err) {
+        console.error(
+            "Failed to load DevTools warning or start detection:",
+            err
+        );
+    }
+}
+
+loadDevToolsWarningAndDetect();
+let devToolsOpen = false;
+
+setInterval(() => {
+    const before = new Date();
+    debugger;
+
+    const after = new Date();
+    if (after - before > 100) {
+        if (!devToolsOpen) {
+            devToolsOpen = true;
+            showWarning();
+        }
+    } else {
+        if (devToolsOpen) {
+            devToolsOpen = false;
+            hideWarning();
+        }
+    }
+}, 1000);
+
+function showWarning() {
+    const banner = document.getElementById("devtools-warning");
+    banner.classList.remove("hidden");
+    banner.classList.add("animate-bounce");
+}
+
+function hideWarning() {
+    const banner = document.getElementById("devtools-warning");
+    banner.classList.add("hidden");
+    banner.classList.remove("animate-bounce");
+}
