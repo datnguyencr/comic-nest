@@ -1,4 +1,6 @@
 let comicData = null;
+let isVolumeChange = false;
+let loadToken = 0;
 
 async function loadComic() {
     const params = new URLSearchParams(window.location.search);
@@ -36,12 +38,14 @@ function setupVolumeSelector() {
     });
 
     select.onchange = () => {
+        isVolumeChange = true;
         loadVolume(Number(select.value));
     };
 }
 async function loadVolume(volumeNumber) {
+    const myToken = ++loadToken; // invalidate all previous loads
     const reader = document.getElementById("reader");
-    reader.innerHTML = "";
+    reader.replaceChildren();
 
     const volume = comicData.volumes.find((v) => v.volume === volumeNumber);
     if (!volume) return;
@@ -49,11 +53,16 @@ async function loadVolume(volumeNumber) {
     const volFolder = `vol${String(volumeNumber).padStart(2, "0")}`;
 
     for (let i = 0; i < volume.pageCount; i++) {
+        if (myToken !== loadToken) return; // ❗ STOP OLD LOAD
         const page = String(i).padStart(3, "0");
         const url = `${comicData.path}/${volFolder}/${page}.avif.enc`;
 
         // Decrypt to ArrayBuffer
         const blobUrl = await fetchAndDecrypt(url, "image/avif");
+        if (myToken !== loadToken) {
+            URL.revokeObjectURL(blobUrl);
+            return;
+        }
         const img = new Image();
 
         await new Promise((resolve, reject) => {
@@ -69,14 +78,17 @@ async function loadVolume(volumeNumber) {
         const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0);
 
-        // Optionally, revoke the blob immediately
-        URL.revokeObjectURL(blobUrl);
-
-        // Add canvas to reader instead of <img>
+        if (myToken !== loadToken) {
+            URL.revokeObjectURL(blobUrl);
+            return;
+        }
         reader.appendChild(canvas);
     }
 
-    window.scrollTo({ top: 0, behavior: "instant" });
+    if (isVolumeChange && myToken === loadToken) {
+        window.scrollTo({ top: 0, behavior: "instant" });
+        isVolumeChange = false;
+    }
 }
 
 loadComic().catch((err) => {
@@ -89,7 +101,7 @@ loadComic().catch((err) => {
 const reader = document.getElementById("reader");
 
 function getPages() {
-    return Array.from(reader.querySelectorAll("img"));
+    return Array.from(reader.querySelectorAll("canvas"));
 }
 
 function getCurrentPageIndex() {
