@@ -161,3 +161,4 @@ document.addEventListener("keydown", (e) => {
             break;
     }
 });
+Utils.enableContentProtection();

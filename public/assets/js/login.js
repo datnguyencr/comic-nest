@@ -1,3 +1,4 @@
+import * as Utils from "./utils.5a57b115.js";
 import { auth } from "./auth.f737c5cb.js";
 import {
     signInWithPopup,
@@ -28,3 +29,4 @@ loginBtn.addEventListener("click", async () => {
         alert("Login failed. Please try again.");
     }
 });
+Utils.enableContentProtection();

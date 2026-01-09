@@ -1,7 +1,7 @@
 import * as Auth from "./auth.f737c5cb.js";
 import * as Utils from "./utils.5a57b115.js";
 const container = document.getElementById("items");
-const template = document.getElementById("item-template");
+
 const searchInput = document.getElementById("searchInput");
 const accessInput = document.getElementById("accessInput");
 const unlockBar = document.getElementById("unlockBar");
@@ -21,13 +21,13 @@ async function renderLibrary() {
     const query = (searchInput?.value || "").trim().toLowerCase();
 
     container.innerHTML = "";
-
+    const template = await Utils.loadTemplate("templates/item-template.html");
     for (const comic of allComics) {
         if (comic.private && !allowPrivate) continue;
 
         if (query && !comic.title.toLowerCase().includes(query)) continue;
+        const node = template.content.cloneNode(true); // clone
 
-        const node = template.content.cloneNode(true);
         const img = node.querySelector(".item-image");
         const title = node.querySelector(".item-name");
         const card = node.querySelector(".card");
@@ -86,3 +86,4 @@ function isMobileLike() {
 if (isMobileLike()) {
     unlockBar.classList.remove("hidden");
 }
+Utils.enableContentProtection();

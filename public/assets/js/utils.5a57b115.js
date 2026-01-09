@@ -1,3 +1,63 @@
+// Cache for multiple templates
+const templateCache = new Map();
+
+/**
+ * Load a template from an external HTML file.
+ * @param {string} url - URL of the HTML file containing a <template>.
+ * @returns {HTMLTemplateElement} - The <template> element from the file.
+ */
+export async function loadTemplate(url) {
+    if (templateCache.has(url)) {
+        return templateCache.get(url);
+    }
+
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Failed to load template: ${url}`);
+
+    const html = await res.text();
+    const container = document.createElement("div");
+    container.innerHTML = html;
+
+    const template = container.querySelector("template");
+    if (!template) throw new Error(`No <template> found in ${url}`);
+    const clonedTemplate = template.cloneNode(true);
+    templateCache.set(url, clonedTemplate);
+    return clonedTemplate;
+}
+// Cache to track loaded dialogs
+const dialogCache = new Map();
+
+/**
+ * Load a dialog from external HTML and append it to the body.
+ * Only loads once.
+ * @param {string} url - URL of the HTML file containing a <template> or dialog HTML.
+ * @param {string} dialogId - The id of the dialog element inside the HTML.
+ * @returns {HTMLElement} - The dialog element in the DOM.
+ */
+export async function loadDialog(url, dialogId) {
+    if (dialogCache.has(dialogId)) {
+        return dialogCache.get(dialogId);
+    }
+
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Failed to load dialog: ${url}`);
+
+    const html = await res.text();
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = html;
+
+    let dialog = wrapper.querySelector(`#${dialogId}`);
+    if (!dialog) {
+        const tpl = wrapper.querySelector("template");
+        if (!tpl) throw new Error(`No dialog or template found in ${url}`);
+        dialog = tpl.content.firstElementChild;
+    }
+    const clonedDialog = dialog.cloneNode(true);
+    document.body.appendChild(clonedDialog);
+    dialogCache.set(dialogId, clonedDialog);
+    return clonedDialog;
+}
+
 // AES-GCM 32-byte key (same as Python)
 const KEY_BYTES = new TextEncoder().encode("692b0630a29e5454545444fa2ee5f630");
 
@@ -63,15 +123,49 @@ export function hasAccess() {
 export function setAccess(key) {
     localStorage.setItem("accessKey", key);
 }
-// ================= Right-Click Block =================
-document.addEventListener("contextmenu", (e) => e.preventDefault());
-// ================= DevTools Warning =================
+
+let devToolsOpen = false;
+let hostile = false;
+export function enableContentProtection() {
+    // ================= Right-Click Block =================
+    document.addEventListener("contextmenu", (e) => e.preventDefault());
+    loadDevToolsWarningAndDetect();
+    // ================= Detection Loop =================
+    setInterval(() => {
+        const before = new Date();
+        debugger;
+
+        const after = new Date();
+        if (after - before > 100) {
+            onHostile("debugger timing");
+            if (!devToolsOpen) {
+                devToolsOpen = true;
+                showWarning();
+            }
+        } else {
+            if (devToolsOpen) {
+                devToolsOpen = false;
+                hideWarning();
+            }
+        }
+    }, 1000);
+    //  ================= Optional Keyboard Block =================
+    // Prevent F12 / Ctrl+Shift+I / Ctrl+Shift+C
+    document.addEventListener("keydown", (e) => {
+        if (
+            e.key === "F12" ||
+            (e.ctrlKey && e.shiftKey && ["I", "C", "J"].includes(e.key))
+        )
+            e.preventDefault();
+    });
+}
+
 async function loadDevToolsWarningAndDetect() {
     try {
-        // 1️⃣ Load external HTML
-        const response = await fetch("devtools-warning.html");
-        const html = await response.text();
-        document.body.insertAdjacentHTML("beforeend", html);
+        const dialog = await loadDialog(
+            "templates/devtools-warning.html",
+            "devtoolsWarning"
+        );
     } catch (err) {
         console.error(
             "Failed to load DevTools warning or start detection:",
@@ -79,11 +173,6 @@ async function loadDevToolsWarningAndDetect() {
         );
     }
 }
-
-loadDevToolsWarningAndDetect();
-let devToolsOpen = false;
-// ================= Detection Loop =================
-let hostile = false;
 
 function onHostile(reason) {
     if (hostile) return;
@@ -111,25 +200,6 @@ function wipeContent() {
     `;
 }
 
-setInterval(() => {
-    const before = new Date();
-    debugger;
-
-    const after = new Date();
-    if (after - before > 100) {
-        onHostile("debugger timing");
-        if (!devToolsOpen) {
-            devToolsOpen = true;
-            showWarning();
-        }
-    } else {
-        if (devToolsOpen) {
-            devToolsOpen = false;
-            hideWarning();
-        }
-    }
-}, 1000);
-
 function showWarning() {
     const banner = document.getElementById("devtools-warning");
     banner.classList.remove("hidden");
@@ -141,12 +211,3 @@ function hideWarning() {
     banner.classList.add("hidden");
     banner.classList.remove("animate-bounce");
 }
-//  ================= Optional Keyboard Block =================
-// Prevent F12 / Ctrl+Shift+I / Ctrl+Shift+C
-document.addEventListener("keydown", (e) => {
-    if (
-        e.key === "F12" ||
-        (e.ctrlKey && e.shiftKey && ["I", "C", "J"].includes(e.key))
-    )
-        e.preventDefault();
-});
