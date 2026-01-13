@@ -1,0 +1,32 @@
+<template>
+    <div
+        id="confirmSignOutDialog"
+        class="fixed inset-0 z-[300] hidden items-center justify-center bg-black/50"
+    >
+        <div
+            class="bg-white dark:bg-slate-800 rounded-lg shadow-lg w-full max-w-sm p-5"
+        >
+            <h3
+                class="text-lg text-gray-600 dark:text-white font-semibold mb-3"
+            >
+                Sign out?
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-white mb-5">
+                Signing out will prevent access to your saved CVs until you log
+                in again.
+            </p>
+            <div class="flex justify-center gap-3 mt-8">
+                <button
+                    class="negative-btn px-8 py-2 rounded bg-gray-200 text-black hover:bg-gray-300 rounded-full min-w-[120px] shadow-sm hover:shadow-md"
+                >
+                    Cancel
+                </button>
+                <button
+                    class="positive-btn px-8 py-2 rounded bg-red-500 text-white hover:bg-red-700 rounded-full min-w-[120px] shadow-sm hover:shadow-md"
+                >
+                    Sign Out
+                </button>
+            </div>
+        </div>
+    </div>
+</template>

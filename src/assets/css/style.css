@@ -10,13 +10,16 @@ html {
     scroll-behavior: smooth;
 }
 
-/* Image rendering stability */
-img {
-    display: block;
-    width: 100%;
-    height: auto;
-}
 canvas {
     user-select: none;
     pointer-events: none;
 }
+/* Tailwind */
+@import "tailwindcss";
+
+/* Sources */
+@source "../**/*.html";
+@source "../**/*.js";
+
+/* Variants */
+@custom-variant dark (&:where(.dark, .dark *));

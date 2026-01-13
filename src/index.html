@@ -4,9 +4,8 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Comic Nest</title>
-
-        <script src="https://cdn.tailwindcss.com"></script>
-        <link rel="stylesheet" href="assets/css/style.c81f7c9d.css" />
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="stylesheet" href="assets/css/style.css" />
     </head>
 
     <body class="bg-zinc-900 text-white min-h-screen p-6">
@@ -16,19 +15,15 @@
             <div
                 class="max-w-4xl mx-auto px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4"
             >
-                <!-- Title -->
                 <div
                     id="title"
                     class="font-semibold text-lg flex-1 text-center sm:text-left"
                 >
                     Comic Nest
                 </div>
-
-                <!-- Row container for search + account -->
                 <div
                     class="flex flex-1 items-center gap-3 justify-center sm:justify-end"
                 >
-                    <!-- Search -->
                     <input
                         id="searchInput"
                         type="text"
@@ -36,13 +31,11 @@
                         class="bg-zinc-800 border border-zinc-700 rounded px-3 py-1.5 text-sm w-full sm:w-64 focus:outline-none focus:border-zinc-500"
                     />
 
-                    <!-- Account -->
                     <div id="account" class="flex items-center gap-2"></div>
                 </div>
             </div>
         </header>
 
-        <!-- GRID -->
         <div
             id="items"
             class="grid gap-6 justify-center mx-auto pb-14 pt-4"
@@ -51,8 +44,6 @@
                 grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             "
         ></div>
-
-        <!-- CARD TEMPLATE -->
 
         <button
             id="scrollTopBtn"
@@ -85,6 +76,6 @@
                 class="bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-sm w-28"
             />
         </div>
-        <script src="./assets/js/index.6db10187.js" type="module"></script>
+        <script src="assets/js/index.js" type="module"></script>
     </body>
 </html>

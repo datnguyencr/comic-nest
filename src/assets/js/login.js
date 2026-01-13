@@ -1,5 +1,5 @@
-import * as Utils from "./utils.5a57b115.js";
-import { auth } from "./auth.f737c5cb.js";
+import * as Utils from "./utils.js";
+import { auth } from "./auth.js";
 import {
     signInWithPopup,
     GoogleAuthProvider,
@@ -19,7 +19,6 @@ if (backBtn) {
     });
 }
 
-// Login handler
 loginBtn.addEventListener("click", async () => {
     try {
         await signInWithPopup(auth, provider);
@@ -29,4 +28,5 @@ loginBtn.addEventListener("click", async () => {
         alert("Login failed. Please try again.");
     }
 });
+localStorage.setItem("theme", "dark");
 Utils.enableContentProtection();

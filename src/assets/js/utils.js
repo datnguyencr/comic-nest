@@ -94,21 +94,6 @@ export async function fetchAndDecrypt(url, mimeType = "image/avif") {
 
     return URL.createObjectURL(new Blob([decrypted], { type: mimeType }));
 }
-const scrollBtn = document.getElementById("scrollTopBtn");
-
-// Show button after scrolling down 300px
-window.addEventListener("scroll", () => {
-    if (window.scrollY > 300) {
-        scrollBtn.classList.remove("hidden");
-    } else {
-        scrollBtn.classList.add("hidden");
-    }
-});
-
-// Smooth scroll to top on click
-scrollBtn.addEventListener("click", () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-});
 
 function getTodayKey() {
     const d = new Date();
@@ -210,4 +195,50 @@ function hideWarning() {
     const banner = document.getElementById("devtools-warning");
     banner.classList.add("hidden");
     banner.classList.remove("animate-bounce");
+}
+export function setupDialog({
+    dialogId,
+    openBtn,
+    onNegativePressed: onNegativePressed,
+    onPositivePressed: onPositivePressed,
+}) {
+    const dialog = document.getElementById(dialogId);
+
+    function openDialog() {
+        dialog.classList.remove("hidden");
+        dialog.classList.add("flex");
+    }
+
+    function closeDialog() {
+        dialog.classList.add("hidden");
+        dialog.classList.remove("flex");
+    }
+
+    openBtn?.addEventListener("click", openDialog);
+
+    dialog.addEventListener("click", (e) => {
+        if (e.target === dialog) closeDialog();
+    });
+    const negativeBtn = dialog.querySelector("button.negative-btn");
+    negativeBtn?.addEventListener("click", () => {
+        if (onNegativePressed) {
+            onNegativePressed();
+        }
+        closeDialog();
+    });
+
+    const positiveBtn = dialog.querySelector("button.positive-btn");
+    positiveBtn?.addEventListener("click", () => {
+        if (onPositivePressed) {
+            onPositivePressed();
+        }
+        closeDialog();
+    });
+
+    return { openDialog, closeDialog };
+}
+const savedTheme = localStorage.getItem("theme");
+const html = document.documentElement;
+if (savedTheme === "dark") {
+    html.classList.add("dark");
 }
