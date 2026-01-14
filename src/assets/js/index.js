@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <img
                 src="${user.photoURL}"
                 title="${user.email}"
-                class="w-8 h-8 rounded-full cursor-pointer"
+                class="w-8 h-8 rounded-full cursor-pointer flex-shrink-0"
             />
         `;
             el.onclick = () => {
@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         } else {
             el.innerHTML = `
             <div
-                class="w-8 h-8 rounded-full bg-zinc-700 cursor-pointer"
+                class="w-8 h-8 rounded-full bg-zinc-700 cursor-pointer flex-shrink-0"
                 title="Sign in"
             ></div>
         `;

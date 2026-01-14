@@ -2,12 +2,12 @@ import * as Auth from "./auth.js";
 import * as Utils from "./utils.js";
 
 let comicData = null;
-let isVolumeChange = false;
 let loadToken = 0;
 
 async function loadComic() {
     const params = new URLSearchParams(window.location.search);
     const comicId = params.get("id");
+    const volFromUrl = Number(params.get("vol"));
 
     if (!comicId) {
         throw new Error("Missing comic id in URL");
@@ -26,7 +26,22 @@ async function loadComic() {
     document.getElementById("title").innerText = comicData.title;
 
     setupVolumeSelector();
-    loadVolume(comicData.volumes[0].volume);
+    const initialVolume =
+        comicData.volumes.find((v) => v.volume === volFromUrl)?.volume ??
+        comicData.volumes[0].volume;
+    updateUrlVolume(initialVolume);
+    loadVolume(initialVolume);
+    syncVolumeSelect(initialVolume);
+}
+function syncVolumeSelect(volume) {
+    const select = document.getElementById("volumeSelect");
+    select.value = volume;
+}
+
+function updateUrlVolume(volume) {
+    const url = new URL(window.location.href);
+    url.searchParams.set("vol", volume);
+    history.replaceState({}, "", url);
 }
 
 function setupVolumeSelector() {
@@ -41,8 +56,11 @@ function setupVolumeSelector() {
     });
 
     select.onchange = () => {
-        isVolumeChange = true;
-        loadVolume(Number(select.value));
+        const vol = Number(select.value);
+        updateUrlVolume(vol);
+        select.disabled = true;
+        loadVolume(vol);
+        select.disabled = false;
     };
 }
 async function loadVolume(volumeNumber) {
@@ -56,7 +74,7 @@ async function loadVolume(volumeNumber) {
     const volFolder = `vol${String(volumeNumber).padStart(2, "0")}`;
 
     for (let i = 0; i < volume.pageCount; i++) {
-        if (myToken !== loadToken) return; // ❗ STOP OLD LOAD
+        if (myToken !== loadToken) return;
         const page = String(i).padStart(3, "0");
         const url = `${comicData.path}/${volFolder}/${page}.avif.enc`;
 
@@ -74,17 +92,13 @@ async function loadVolume(volumeNumber) {
             img.src = blobUrl;
         });
 
-        // Draw to canvas
         const canvas = document.createElement("canvas");
         canvas.width = img.width;
         canvas.height = img.height;
         const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0);
+        URL.revokeObjectURL(blobUrl);
 
-        if (myToken !== loadToken) {
-            URL.revokeObjectURL(blobUrl);
-            return;
-        }
         reader.appendChild(canvas);
     }
 }
@@ -103,7 +117,6 @@ function getCurrentPageIndex() {
     return 0;
 }
 
-const accountEl = document.getElementById("account");
 document.addEventListener("DOMContentLoaded", async () => {
     loadComic().catch((err) => {
         console.error(err);
@@ -185,27 +198,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         renderAccount(user);
     });
     function renderAccount(user) {
-        accountEl.replaceWith(accountEl.cloneNode(false));
         const el = document.querySelector("#account");
-
+        el.replaceChildren();
         if (user) {
-            el.innerHTML = `
-            <img
+            el.innerHTML = `<img
                 src="${user.photoURL}"
                 title="${user.email}"
-                class="w-8 h-8 rounded-full cursor-pointer"
-            />
-        `;
+                class="w-8 h-8 rounded-full cursor-pointer flex-shrink-0"
+            />`;
             el.onclick = () => {
                 signOutDialog.open();
             };
         } else {
-            el.innerHTML = `
-            <div
-                class="w-8 h-8 rounded-full bg-zinc-700 cursor-pointer"
-                title="Sign in"
-            ></div>
-        `;
+            el.innerHTML = `<div
+                        class="w-8 h-8 rounded-full bg-zinc-700 cursor-pointer flex-shrink-0"
+                        title="Sign in"></div>`;
             el.onclick = () => Auth.login();
         }
     }
