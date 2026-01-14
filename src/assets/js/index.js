@@ -130,5 +130,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    //Utils.enableContentProtection();
+    if (Utils.isProduction()) {
+        Utils.enableContentProtection();
+    }
 });

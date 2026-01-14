@@ -216,5 +216,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             el.onclick = () => Auth.login();
         }
     }
-    //Utils.enableContentProtection();
+    if (Utils.isProduction()) {
+        Utils.enableContentProtection();
+    }
 });

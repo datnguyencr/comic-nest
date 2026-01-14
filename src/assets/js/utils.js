@@ -239,3 +239,7 @@ const html = document.documentElement;
 if (savedTheme === "dark") {
     html.classList.add("dark");
 }
+
+export function isProduction() {
+    return import.meta.env.PROD;
+}
