@@ -92,42 +92,43 @@ document.addEventListener("DOMContentLoaded", async () => {
         "templates/confirm-sign-out-dialog.html",
         "confirmSignOutDialog"
     );
-    Utils.setupDialog({
+    const signOutDialog = Utils.setupDialog({
         dialogId: "confirmSignOutDialog",
-        openBtn: accountEl,
+        openBtn: null,
         onNegativePressed: () => {},
         onPositivePressed: async () => {
             await Auth.logout();
         },
     });
-    await Auth.verifyAuth((user) => {
-        if (accountEl) {
-            if (user) {
-                accountEl.innerHTML = `
-            <img 
-                src="${user.photoURL}" 
-                alt="${user.email}" 
-                title="${user.email}" 
-                class="w-8 h-8 rounded-full object-cover flex-shrink-0 cursor-default"
+
+    Auth.observeAuth((user) => {
+        renderAccount(user);
+    });
+    function renderAccount(user) {
+        accountEl.replaceWith(accountEl.cloneNode(false));
+        const el = document.querySelector("#account");
+
+        if (user) {
+            el.innerHTML = `
+            <img
+                src="${user.photoURL}"
+                title="${user.email}"
+                class="w-8 h-8 rounded-full cursor-pointer"
             />
         `;
-                accountEl.addEventListener("click", () => {});
-            } else {
-                accountEl.innerHTML = `
-            <div 
-                class="w-8 h-8 rounded-full bg-zinc-700 flex-shrink-0 cursor-pointer"
+            el.onclick = () => {
+                signOutDialog.open();
+            };
+        } else {
+            el.innerHTML = `
+            <div
+                class="w-8 h-8 rounded-full bg-zinc-700 cursor-pointer"
                 title="Sign in"
             ></div>
         `;
-
-                accountEl.addEventListener("click", () => {
-                    const redirectUrl = encodeURIComponent(
-                        window.location.href
-                    );
-                    window.location.href = `/login.html?redirect=${redirectUrl}`;
-                });
-            }
+            el.onclick = () => Auth.login();
         }
-    });
+    }
+
     //Utils.enableContentProtection();
 });

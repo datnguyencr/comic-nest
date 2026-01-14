@@ -1,6 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import {
     getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
     signOut,
     onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
@@ -12,14 +14,18 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+provider.setCustomParameters({
+    prompt: "select_account",
+});
 
-export { auth };
-
-export function verifyAuth(callback) {
-    onAuthStateChanged(auth, (user) => {
-        callback(user || null);
-    });
+export function login() {
+    return signInWithPopup(auth, provider);
 }
-export async function logout() {
-    await signOut(auth);
+
+export function logout() {
+    return signOut(auth);
+}
+export function observeAuth(callback) {
+    return onAuthStateChanged(auth, callback);
 }

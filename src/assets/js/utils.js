@@ -196,46 +196,43 @@ function hideWarning() {
     banner.classList.add("hidden");
     banner.classList.remove("animate-bounce");
 }
+
+function openDialog(dialog) {
+    dialog.classList.remove("hidden");
+    dialog.classList.add("flex");
+}
+
+function closeDialog(dialog) {
+    dialog.classList.add("hidden");
+    dialog.classList.remove("flex");
+}
 export function setupDialog({
     dialogId,
-    openBtn,
-    onNegativePressed: onNegativePressed,
-    onPositivePressed: onPositivePressed,
+    onNegativePressed,
+    onPositivePressed,
 }) {
     const dialog = document.getElementById(dialogId);
 
-    function openDialog() {
-        dialog.classList.remove("hidden");
-        dialog.classList.add("flex");
-    }
-
-    function closeDialog() {
-        dialog.classList.add("hidden");
-        dialog.classList.remove("flex");
-    }
-
-    openBtn?.addEventListener("click", openDialog);
-
     dialog.addEventListener("click", (e) => {
-        if (e.target === dialog) closeDialog();
-    });
-    const negativeBtn = dialog.querySelector("button.negative-btn");
-    negativeBtn?.addEventListener("click", () => {
-        if (onNegativePressed) {
-            onNegativePressed();
-        }
-        closeDialog();
+        if (e.target === dialog) closeDialog(dialog);
     });
 
-    const positiveBtn = dialog.querySelector("button.positive-btn");
-    positiveBtn?.addEventListener("click", () => {
-        if (onPositivePressed) {
-            onPositivePressed();
-        }
-        closeDialog();
+    dialog.querySelector(".negative-btn")?.addEventListener("click", () => {
+        onNegativePressed?.();
+        closeDialog(dialog);
     });
 
-    return { openDialog, closeDialog };
+    dialog
+        .querySelector(".positive-btn")
+        ?.addEventListener("click", async () => {
+            await onPositivePressed?.();
+            closeDialog(dialog);
+        });
+
+    return {
+        open: () => openDialog(dialog),
+        close: () => closeDialog(dialog),
+    };
 }
 const savedTheme = localStorage.getItem("theme");
 const html = document.documentElement;
