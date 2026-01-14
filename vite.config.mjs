@@ -26,7 +26,6 @@ export default defineConfig({
             input: {
                 index: resolve(__dirname, "src/index.html"),
                 reader: resolve(__dirname, "src/reader.html"),
-                login: resolve(__dirname, "src/login.html"),
             },
             output: {
                 // JS chunks and entries go to assets/js
