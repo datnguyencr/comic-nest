@@ -10,29 +10,50 @@
 
     <body class="text-white bg-zinc-900">
         <header
-            class="sticky top-0 z-10 bg-zinc-900/90 backdrop-blur border-b border-zinc-700"
+            class="sticky top-0 z-50 bg-slate-800/90 border-b border-slate-700"
         >
             <div
-                class="max-w-4xl mx-auto px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4"
+                class="px-4 py-2 grid gap-2 sm:gap-0 sm:grid-cols-3 items-center"
             >
-                <div
-                    id="title"
-                    class="font-semibold text-lg text-center sm:text-left"
-                >
+                <!-- Row 1 (mobile) / Col 1 (desktop): Back -->
+                <div class="flex items-center justify-start">
+                    <a
+                        href="index.html"
+                        class="inline-flex items-center gap-2 text-gray-300 hover:text-gray-100"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="w-5 h-5"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M15.75 19.5 8.25 12l7.5-7.5"
+                            />
+                        </svg>
+                        <span data-i18n="back"></span>
+                    </a>
+                </div>
+
+                <!-- Row 1 (mobile) / Col 2 (desktop): Title -->
+                <div id="title" class="text-center font-semibold text-lg">
                     Comic Nest
                 </div>
+
+                <!-- Row 2 (mobile) / Col 3 (desktop): Controls -->
                 <div
-                    class="flex items-center justify-center w-full sm:w-auto gap-2"
+                    class="flex items-center gap-2 justify-between sm:justify-end"
                 >
                     <select
                         id="volumeSelect"
-                        class="bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-sm flex-1 sm:flex-none w-full sm:w-auto"
+                        class="bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-sm w-full sm:w-auto"
                     ></select>
 
-                    <div
-                        id="account"
-                        class="flex items-center gap-2 justify-center"
-                    ></div>
+                    <div id="account" class="flex items-center"></div>
                 </div>
             </div>
         </header>
